@@ -58,17 +58,19 @@ namespace L01_2020GL602.Controllers
 
         public IActionResult GetByNombre(string nombre, string apellido) {
 
-            usuarios? usuario = (from u in _blogContexto.usuarios
-                                 where u.nombre.Contains(nombre) && u.apellido.Contains(apellido)
-                                 select u).FirstOrDefault();
+            //Retorna una lista porque pueden haber varios usuarios con el mismo nombre y apellido
 
-            if (usuario == null)
+            List<usuarios> listaUsuario = (from u in _blogContexto.usuarios
+                                           where u.nombre.Contains(nombre) && u.apellido.Contains(apellido)
+                                           select u).ToList();
+
+            if (listaUsuario == null)
             {
                 return NotFound();
 
             }
 
-            return Ok(usuario);
+            return Ok(listaUsuario);
         }
 
 
@@ -125,7 +127,7 @@ namespace L01_2020GL602.Controllers
             usuario.nombre = usuarioNuevo.nombre;
             usuario.apellido = usuarioNuevo.apellido;
 
-            _blogContexto.Entry(usuarioNuevo).State = EntityState.Modified;
+            _blogContexto.Entry(usuario).State = EntityState.Modified;
             _blogContexto.SaveChanges();
             return Ok(usuarioNuevo);
             
